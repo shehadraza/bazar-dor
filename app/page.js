@@ -1,69 +1,79 @@
-import Image from "next/image";
+import ProductGrid from "@/components/productGrid";
+import BanglaDate from "@/components/banglaDate";
+import { getProducts } from "@/lib/api";
+import { toBn } from "@/lib/format";
 
-export default function Home() {
+function Basket() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <svg viewBox="0 0 240 180" className="w-full max-w-[260px]" aria-hidden="true">
+      <ellipse cx="120" cy="167" rx="85" ry="7" fill="#e5e7eb" />
+      <circle cx="140" cy="52" r="30" fill="#22c55e" />
+      <circle cx="95" cy="62" r="28" fill="#ef4444" />
+      <circle cx="172" cy="84" r="17" fill="#fb923c" />
+      <circle cx="75" cy="88" r="17" fill="#a855f7" />
+      <circle cx="120" cy="82" r="16" fill="#f59e0b" />
+      <path d="M45 88h150l-14 74H59z" fill="#a0522d" />
+      <rect x="40" y="80" width="160" height="12" rx="4" fill="#7c3f1d" />
+      <path d="M75 92l6 70M105 92l3 70M135 92l-3 70M165 92l-6 70" stroke="#7c3f1d" strokeWidth="3" />
+      <path d="M52 118h136M56 140h128" stroke="#7c3f1d" strokeWidth="3" />
+    </svg>
+  );
+}
+
+export default async function Home() {
+  const products = await getProducts();
+
+  if (!products.length) {
+    return <p className="p-10 text-center">ডেটা লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।</p>;
+  }
+
+  const risers = products.filter((p) => p.change.dir === "up").sort((a, b) => b.change.pct - a.change.pct).slice(0, 6);
+  const fallers = products.filter((p) => p.change.dir === "down").sort((a, b) => a.change.pct - b.change.pct).slice(0, 6);
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-8 px-4 py-8">
+      {/* HERO */}
+      <section className="grid items-center gap-6 rounded-2xl border border-green-100 bg-white p-6 md:grid-cols-[1.5fr_1fr] md:p-10">
+        <div>
+          <BanglaDate className="inline-block min-h-6 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800" />
+          <h1 className="mt-3 text-3xl font-bold leading-tight sm:text-4xl">আজকের বাজারের দাম এক নজরে</h1>
+          <p className="mt-3 max-w-xl text-sm text-gray-600 sm:text-base">
+            চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম ও মসলা — বাজারভিত্তিক বিস্তারিত, সর্বনিম্ন-সর্বোচ্চ এবং দামের পরিবর্তন এক জায়গায়।
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#সব-পণ্য"
+            className="mt-5 inline-block rounded-lg border border-green-600 bg-green-50 px-5 py-2.5 text-sm font-semibold text-green-700 transition hover:bg-green-700 hover:text-white"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+            সব পণ্য দেখুন
           </a>
         </div>
-      </main>
+        <div className="flex justify-center md:justify-end">
+          <Basket />
+        </div>
+      </section>
+
+      {/* A */}
+      <section>
+        <h2 className="mb-3 flex items-center gap-2 text-lg font-bold">
+          <span className="text-xs text-red-600">▲</span> আজ দাম বেড়েছে
+        </h2>
+        <ProductGrid products={risers} />
+      </section>
+
+      {/* B */}
+      <section>
+        <h2 className="mb-3 flex items-center gap-2 text-lg font-bold">
+          <span className="text-xs text-green-700">▼</span> আজ দাম কমেছে
+        </h2>
+        <ProductGrid products={fallers} />
+      </section>
+
+      {/* C */}
+      <section id="সব-পণ্য" className="scroll-mt-4">
+        <h2 className="text-lg font-bold">সব পণ্য</h2>
+        <p className="mb-3 text-xs text-gray-500">মোট {toBn(products.length)}টি পণ্য দেখানো হচ্ছে</p>
+        <ProductGrid products={products} />
+      </section>
     </div>
   );
 }
